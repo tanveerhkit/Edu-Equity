@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCQ Quiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #141268;
+            color: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .category {
+            padding: 10px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 16px;
+            text-align: left;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .category:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+        }
+        .content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .question-box {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .options label {
+            display: block;
+            padding: 5px;
+            cursor: pointer;
+        }
+        .options input {
+            margin-right: 10px;
+        }
+        .options label:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        .correct {
+            background-color: lightgreen;
+        }
+        .wrong {
+            background-color: salmon;
+        }
+        .check-btn {
+            margin-top: 10px;
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .check-btn:hover {
+            background-color: #0056b3;
+        }
+        .suggestion {
+            color: red;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar for Categories -->
+    <div class="sidebar">
+        <h2>Categories</h2>
+        <button class="category" onclick="showQuestions()">Start Quiz</button>
+    </div>
+
+    <!-- Main Content Section -->
+    <div class="content" id="questions-container">
+        <h2>Click "Start Quiz" to begin</h2>
+    </div>
+
+    <script>
+        // 20 MCQ Questions with suggestions for incorrect answers
+        const questions = [
+            { q: "What is an algorithm?", options: ["A programming language", "A step-by-step procedure", "A computer", "An operating system"], correct: 1, suggestion: "Learn about Data Structures and Algorithms" },
+            { q: "What is Ohm’s Law?", options: ["V = IR", "P = IV", "F = ma", "E = mc²"], correct: 0, suggestion: "Study Basic Electrical Engineering" },
+            { q: "Which part of an engine burns fuel?", options: ["Piston", "Crankshaft", "Combustion Chamber", "Radiator"], correct: 2, suggestion: "Read about Internal Combustion Engines" },
+            { q: "What is the square root of 81?", options: ["7", "8", "9", "10"], correct: 2, suggestion: "Revise Square Roots and Exponents" },
+            { q: "Which of these is a cloud computing platform?", options: ["Google Docs", "AWS", "Windows XP", "MS Word"], correct: 1, suggestion: "Learn about Cloud Computing Services" },
+            { q: "Which language is mainly used for backend development?", options: ["HTML", "CSS", "JavaScript", "Python"], correct: 3, suggestion: "Explore Backend Development with Python" },
+            { q: "What is Kirchhoff's Voltage Law?", options: ["Total voltage is zero", "Total current is zero", "Total resistance is infinite", "None of these"], correct: 0, suggestion: "Study Kirchhoff’s Laws in Circuit Theory" },
+            { q: "Which part of a car generates power?", options: ["Brakes", "Battery", "Engine", "Steering"], correct: 2, suggestion: "Learn about Car Engine Mechanics" },
+            { q: "What is 5 + 7 * 2?", options: ["24", "19", "17", "14"], correct: 2, suggestion: "Understand Operator Precedence in Mathematics" },
+            { q: "What does HTTP stand for?", options: ["HyperText Transfer Protocol", "Hyperlink Text Transfer Protocol", "High Transfer Text Processing", "None of these"], correct: 0, suggestion: "Study HTTP and Web Development" },
+            { q: "Which gate outputs HIGH only when all inputs are HIGH?", options: ["AND", "OR", "XOR", "NAND"], correct: 0, suggestion: "Review Digital Logic Gates" },
+            { q: "Which law states that force = mass * acceleration?", options: ["Newton’s First Law", "Newton’s Second Law", "Newton’s Third Law", "Ohm’s Law"], correct: 1, suggestion: "Study Newton's Laws of Motion" },
+            { q: "What is the boiling point of water at sea level?", options: ["50°C", "100°C", "150°C", "200°C"], correct: 1, suggestion: "Revise Thermodynamics Basics" },
+            { q: "Which protocol is used to send emails?", options: ["HTTP", "SMTP", "FTP", "TCP"], correct: 1, suggestion: "Learn about Email Protocols (SMTP, IMAP, POP3)" },
+            { q: "Which programming language is used for AI and ML?", options: ["C", "Java", "Python", "PHP"], correct: 2, suggestion: "Explore AI/ML with Python and TensorFlow" },
+            { q: "Which of the following is a prime number?", options: ["12", "15", "17", "20"], correct: 2, suggestion: "Review Prime Numbers in Mathematics" },
+            { q: "Which gas do plants absorb during photosynthesis?", options: ["Oxygen", "Carbon Dioxide", "Nitrogen", "Hydrogen"], correct: 1, suggestion: "Study Photosynthesis in Biology" },
+            { q: "What is the main function of RAM in a computer?", options: ["Permanent Storage", "Temporary Storage", "Data Transfer", "Input Processing"], correct: 1, suggestion: "Understand Computer Memory Systems" },
+            { q: "Which part of the cell contains genetic material?", options: ["Mitochondria", "Cytoplasm", "Nucleus", "Ribosome"], correct: 2, suggestion: "Learn about Cell Biology" },
+            { q: "Which of these is a version control system?", options: ["Git", "Linux", "Apache", "Node.js"], correct: 0, suggestion: "Learn Git and GitHub for Developers" }
+        ];
+
+        function showQuestions() {
+            const container = document.getElementById("questions-container");
+            container.innerHTML = `<h2>Quiz Questions</h2>`;
+
+            questions.forEach((q, index) => {
+                container.innerHTML += `
+                    <div class="question-box" id="qbox-${index}">
+                        <p><b>Q${index + 1}:</b> ${q.q}</p>
+                        <div class="options">
+                            ${q.options.map((option, i) => 
+                                `<label id="q${index}-opt${i}">
+                                    <input type="radio" name="q${index}" value="${i}"> ${option}
+                                </label>`
+                            ).join('')}
+                        </div>
+                        <p class="suggestion" id="suggestion-${index}" style="display:none;"></p>
+                    </div>
+                `;
+            });
+
+            container.innerHTML += `<button class="check-btn" onclick="checkAnswers()">Check Answers</button>`;
+        }
+
+        function checkAnswers() {
+            questions.forEach((q, index) => {
+                const selectedOption = document.querySelector(`input[name="q${index}"]:checked`);
+                const suggestionBox = document.getElementById(`suggestion-${index}`);
+                suggestionBox.style.display = "none";
+                
+                if (selectedOption) {
+                    const selectedValue = parseInt(selectedOption.value);
+                    if (selectedValue !== q.correct) {
+                        suggestionBox.innerText = `Suggested topic: ${q.suggestion}`;
+                        suggestionBox.style.display = "block";
+                    }
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>
